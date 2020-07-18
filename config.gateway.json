@@ -1,0 +1,28 @@
+
+{
+  "interfaces": {
+    "pseudo-ethernet": {
+      "peth0": {
+        "address": [
+          "192.168.5.2/24"
+        ],
+        "description": "Access to LTE modem",
+        "link": "eth2"
+      }
+    }
+  },
+  "service": {
+    "nat": {
+      "rule": {
+        "5000": {
+          "description": "Access to LTE modem",
+          "destination": {
+            "address": "192.168.5.1"
+          },
+          "outbound-interface": "peth0",
+          "type": "masquerade"
+        }
+      }
+    }
+  }
+}
