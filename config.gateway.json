@@ -1,5 +1,20 @@
-
 {
+  "system": {
+    "login": {
+      "user": {
+        "admin": {
+          "authentication": {
+            "public-keys": {
+              "ravron-personal": {
+                "key": "AAAAC3NzaC1lZDI1NTE5AAAAICmU9FoT+e+xxifnGkH3vHofbpOk3b5trob1M5zTXPKr",
+                "type": "ssh-ed25519"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
   "interfaces": {
     "pseudo-ethernet": {
       "peth0": {
