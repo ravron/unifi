@@ -120,10 +120,10 @@ export AWS_SECRET_ACCESS_KEY="$2"
 set -x
 
 # Issue a cert. This won't actually do anything if the cert does not need
-# renewal. It will update the configuration, saving hooks, AWS creds, output
-# filepaths, etc. Note there strict rate limits on production cert generation.
-# When testing this script, add `--staging` to the command below. Let's
-# Encrypt's staging servers will be used indefinitely until you remove the
+# renewal. It will always update the configuration, saving hooks, AWS creds,
+# output filepaths, etc. Note there strict rate limits on production cert
+# generation. When testing this script, add `--staging` to the command below.
+# Let's Encrypt's staging servers will be used indefinitely until you remove the
 # `--staging` option and re-run the setup script.
 ~/.acme.sh/acme.sh \
     --staging \
