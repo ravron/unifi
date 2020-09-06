@@ -53,13 +53,10 @@ cd /etc/ssl/private
 (
 trap 'rm -f cloudkey.p12' EXIT
 
-openssl pkcs12 \\
-    -export \\
-    -in /etc/ssl/private/cloudkey.crt \\
-    -inkey /etc/ssl/private/cloudkey.key \\
-    -out /etc/ssl/private/cloudkey.p12 \\
-    -name unifi \\
-    -password pass:aircontrolenterprise
+CERT_PFX_PATH=/etc/ssl/private/cloudkey.p12 ~/.acme.sh/acme.sh \\
+    --to-pkcs12 \\
+    --domain unifi.ravron.com \\
+    --password aircontrolenterprise
 
 keytool -importkeystore \\
     -deststorepass aircontrolenterprise \\
@@ -68,7 +65,8 @@ keytool -importkeystore \\
     -srckeystore cloudkey.p12 \\
     -srcstoretype PKCS12 \\
     -srcstorepass aircontrolenterprise \\
-    -alias unifi \\
+    -srcalias 1 \\
+    -destalias unifi \\
     -noprompt
 )
 
@@ -94,6 +92,4 @@ set -x
     -d unifi.ravron.com \
     --pre-hook 'tar -zcvf ~/latest-tls-backup.tgz /etc/ssl/private/*' \
     --reloadcmd "~/.acme.sh/reload.bash" \
-    --fullchain-file "/etc/ssl/private/cloudkey.crt" \
-    --key-file "/etc/ssl/private/cloudkey.key" \
     --accountemail 'ravron@posteo.net'
