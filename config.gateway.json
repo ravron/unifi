@@ -23,6 +23,13 @@
         ],
         "description": "Access to LTE modem",
         "link": "eth2"
+      },
+       "peth1": {
+        "address": [
+          "192.168.100.2/24"
+        ],
+        "description": "Access to cable modem",
+        "link": "eth0"
       }
     }
   },
@@ -35,6 +42,14 @@
             "address": "192.168.5.1"
           },
           "outbound-interface": "peth0",
+          "type": "masquerade"
+        },
+        "5001": {
+          "description": "Access to cable modem",
+          "destination": {
+            "address": "192.168.100.1"
+          },
+          "outbound-interface": "peth1",
           "type": "masquerade"
         }
       }
