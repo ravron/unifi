@@ -134,7 +134,6 @@ set -x
     --fullchain-file /etc/ssl/private/cloudkey.crt \
     --key-file /etc/ssl/private/cloudkey.key \
     --accountemail 'ravron@posteo.net' || true
-    #--staging \
 
 cat <<'EOF' >/etc/systemd/system/acme.service
 [Unit]
