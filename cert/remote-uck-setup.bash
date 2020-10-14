@@ -126,7 +126,6 @@ set -x
 # Let's Encrypt's staging servers will be used indefinitely until you remove the
 # `--staging` option and re-run the setup script.
 ~/.acme.sh/acme.sh \
-    --staging \
     --issue \
     --dns dns_aws \
     --domain unifi.ravron.com \
@@ -135,6 +134,7 @@ set -x
     --fullchain-file /etc/ssl/private/cloudkey.crt \
     --key-file /etc/ssl/private/cloudkey.key \
     --accountemail 'ravron@posteo.net' || true
+    #--staging \
 
 cat <<'EOF' >/etc/systemd/system/acme.service
 [Unit]
