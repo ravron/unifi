@@ -55,7 +55,9 @@ set -eux
 mkdir -p ~/.acme.sh/backups
 cd ~/.acme.sh/backups
 
-tar -zcvf ~/.acme.sh/backups/tls-backup-$(date --iso-8601=seconds).tgz /etc/ssl/private/*
+tar -zcvf ~/.acme.sh/backups/tls-backup-$(date --iso-8601=seconds).tgz \
+    /data/unifi-core/config/unifi-core.crt \
+    /data/unifi-core/config/unifi-core.key
 EOF
 
 # Create the reload file
@@ -64,48 +66,9 @@ cat <<'EOF' >~/.acme.sh/reload.bash
 
 set -eux
 
-cd /etc/ssl/private
+service unifi-core reload
 
-(
-trap 'rm -f /etc/ssl/private/cloudkey.p12' EXIT
-
-CERT_PFX_PATH=/etc/ssl/private/cloudkey.p12 ~/.acme.sh/acme.sh \
-    --to-pkcs12 \
-    --domain unifi.ravron.com \
-    --password aircontrolenterprise
-
-# keytool's src alias is the name of the entry, or just its index, starting at
-# 1, if not present. acme.sh's --to-pkcs12 doesn't know how to set the name, so
-# we have to use the index instead.
-keytool -importkeystore \
-    -deststorepass aircontrolenterprise \
-    -destkeypass aircontrolenterprise \
-    -destkeystore unifi.keystore.jks \
-    -srckeystore cloudkey.p12 \
-    -srcstoretype PKCS12 \
-    -srcstorepass aircontrolenterprise \
-    -srcalias 1 \
-    -destalias unifi \
-    -noprompt
-)
-
-md5sum unifi.keystore.jks > unifi.keystore.jks.md5
-
-chown root:ssl-cert cloudkey.crt cloudkey.key unifi.keystore.jks.md5
-chown unifi:ssl-cert unifi.keystore.jks
-
-chmod 640 cloudkey.crt cloudkey.key unifi.keystore.jks unifi.keystore.jks.md5
-
-# Test nginx config, then reload
-/usr/sbin/nginx -t
-service nginx reload
-
-# unifi and unifi-protect don't obey reload, so we have to restart them
-# entirely. Surprise, surprise.
-service unifi restart
-
-# If this system has unifi-protect, restart it too
-systemctl is-active --quiet unifi-protect.service && service unifi-protect restart
+cd ~/.acme.sh/backups
 
 # If there are more than five backups, delete all but the most recent 5. Do this
 # in the reload hook so that we don't delete backups on failed renewals.
@@ -121,7 +84,7 @@ set -x
 
 # Issue a cert. This won't actually do anything if the cert does not need
 # renewal. It will always update the configuration, saving hooks, AWS creds,
-# output filepaths, etc. Note there strict rate limits on production cert
+# output filepaths, etc. Note there are strict rate limits on production cert
 # generation. When testing this script, add `--staging` to the command below.
 # Let's Encrypt's staging servers will be used indefinitely until you remove the
 # `--staging` option and re-run the setup script.
@@ -131,8 +94,8 @@ set -x
     --domain unifi.ravron.com \
     --pre-hook ~/.acme.sh/prehook.bash \
     --reloadcmd ~/.acme.sh/reload.bash \
-    --fullchain-file /etc/ssl/private/cloudkey.crt \
-    --key-file /etc/ssl/private/cloudkey.key \
+    --fullchain-file /data/unifi-core/config/unifi-core.crt \
+    --key-file /data/unifi-core/config/unifi-core.key \
     --accountemail 'ravron@posteo.net' || true
 
 cat <<'EOF' >/etc/systemd/system/acme.service
