@@ -83,6 +83,9 @@
           }
         }
       }
+    },
+    "ssh": {
+      "disable-password-authentication": "''"
     }
   }
 }
