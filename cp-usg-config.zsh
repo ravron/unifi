@@ -9,7 +9,7 @@ fi
 echo 'ok'
 
 echo 'displaying diff against current config.gateway.json...'
-git diff --exit-code =(ssh uck.local 'cat /usr/lib/unifi/data/sites/ghyx00gk/config.gateway.json') config.gateway.json
+git diff --exit-code =(ssh uck.local 'cat /usr/lib/unifi/data/sites/default/config.gateway.json') config.gateway.json
 ret=$?
 if (( $ret == 128 )); then
     echo 'failed to generate diff'
@@ -27,6 +27,6 @@ if ! [[ ${(L)REPLY} == y ]]; then
     exit 1
 fi
 
-scp config.gateway.json uck.local:/usr/lib/unifi/data/sites/ghyx00gk
+scp config.gateway.json uck.local:/usr/lib/unifi/data/sites/default
 
 echo 'you may wish to force a provision of affected devices'
