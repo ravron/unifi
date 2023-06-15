@@ -1,4 +1,18 @@
 {
+  "protocols": {
+    "igmp-proxy": {
+      "interface": {
+        "eth1": {
+          "role": "upstream",
+          "threshold": "1"
+        },
+        "eth1.10": {
+          "role": "downstream",
+          "threshold": "1"
+        }
+      }
+    }
+  },
   "system": {
     "login": {
       "user": {
