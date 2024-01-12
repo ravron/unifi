@@ -88,8 +88,12 @@ set -x
 # generation. When testing this script, add `--staging` to the command below.
 # Let's Encrypt's staging servers will be used indefinitely until you remove the
 # `--staging` option and re-run the setup script.
+# UniFi OS can't handle ECDSA P-256 keys, which are the default, so we need to
+# specify keylength 2048 to force an RSA key.
 ~/.acme.sh/acme.sh \
     --issue \
+    --keylength 2048 \
+    --server letsencrypt \
     --dns dns_aws \
     --domain unifi.ravron.com \
     --pre-hook ~/.acme.sh/prehook.bash \
